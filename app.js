@@ -36,7 +36,7 @@ app.get('/', function (req, res) {
 app.get('/search/:query', function (req, res) {
     var query = req.params.query,
         successCallback = function (response) {
-            res.send(response);
+            res.send(JSON.stringify(response));
         },
         errorCallback = function (message) {
             res.send('Error: ' + message);

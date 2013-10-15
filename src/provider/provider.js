@@ -1,6 +1,5 @@
 (function (BookrCrawler) {
     'use strict';
-
     var providers = {};
     require('./google');
     require('./isbndb');

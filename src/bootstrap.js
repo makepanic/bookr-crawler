@@ -11,6 +11,7 @@ var _ = require('lodash'),
         }
     };
 
+require('./model/book');
 require('./provider/provider');
 
 BookrCrawler.crawl = function (currentCfg) {
@@ -33,7 +34,7 @@ BookrCrawler.crawl = function (currentCfg) {
         promises.push(BookrCrawler.Provider(p).crawl(query));
     });
     Q.all(promises).then(function (results) {
-        console.log('success');
-        cfg.successCallback('done');
+        console.log('success', results);
+        cfg.successCallback(results);
     });
 };

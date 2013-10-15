@@ -1,4 +1,5 @@
-var Q = require('q'),
+var Q = Q || require('q'),
+    request = request || require('request'),
     providers = providers || {};
 
 providers.isbndb = function () {
@@ -7,7 +8,7 @@ providers.isbndb = function () {
     crawl = function () {
         var deferred = Q.defer();
 
-        deferred.resolve('done');
+        deferred.resolve('TODO: isbndb');
 
         return deferred.promise;
     };
