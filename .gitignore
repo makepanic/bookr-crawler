@@ -1,0 +1,15 @@
+# generated files
+dist/
+
+# Eclipse project files
+.classpath
+.project
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# node modules
+node_modules/
