@@ -1,5 +1,6 @@
 var Q = Q || require('q'),
     request = request || require('request'),
+    nconf = nconf || require('nconf'),
     providers = providers || {};
 
 providers.google = function () {
@@ -82,7 +83,10 @@ providers.google = function () {
                     console.error('Error parsing json. ' + e);
                 }
             }
-            deferred.resolve(books);
+            deferred.resolve({
+                data: books,
+                key: 'google'
+            });
         });
 
         return deferred.promise;

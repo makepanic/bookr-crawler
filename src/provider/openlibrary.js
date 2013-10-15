@@ -1,5 +1,6 @@
 var Q = Q || require('q'),
     request = request || require('request'),
+    nconf = nconf || require('nconf'),
     providers = providers || {};
 
 providers.openlibrary = function () {
@@ -8,7 +9,10 @@ providers.openlibrary = function () {
     crawl = function () {
         var deferred = Q.defer();
 
-        deferred.resolve('TODO: openlibrary');
+        deferred.resolve({
+            data: 'TODO',
+            key: 'openlibrary'
+        });
 
         return deferred.promise;
     };
