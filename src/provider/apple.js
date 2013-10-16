@@ -49,13 +49,9 @@ providers.isbndb = function () {
 
                 try {
                     responseData = JSON.parse(body);
-
-                    // check if correct response object exists
-                    if (responseData && responseData.data) {
-                        responseData.data.forEach(function (item) {
-                            books.push(bookConverter(item));
-                        });
-                    }
+                    responseData.data.forEach(function (item) {
+                        books.push(bookConverter(item));
+                    });
                 } catch (e) {
                     console.error('Error parsing json. ' + e);
                 }

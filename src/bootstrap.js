@@ -15,15 +15,10 @@ require('./model/book');
 require('./provider/provider');
 
 BookrCrawler.crawl = function (currentCfg) {
-    var defaultCfg = {
+    var deferred = Q.defer(),
+        defaultCfg = {
             provider: [],
-            query: '',
-            successCallback: function (data) {
-
-            },
-            errorCallback: function () {
-                throw 'Error';
-            }
+            query: ''
         },
         cfg = _.extend(defaultCfg, currentCfg),
         provider = cfg.provider,
@@ -34,7 +29,10 @@ BookrCrawler.crawl = function (currentCfg) {
         promises.push(BookrCrawler.Provider(p).crawl(query));
     });
     Q.all(promises).then(function (results) {
-        console.log('success', results);
-        cfg.successCallback(results);
+        deferred.resolve(results);
     });
+
+    return deferred.promise;
 };
+
+require('./merger');

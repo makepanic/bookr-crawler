@@ -22,7 +22,7 @@ BookrCrawler.Book = function (data) {
             textSnippet: ''
         },
         dataItem,
-        combinedData = _.extend(defaultData, data);
+        combinedData = _.defaults(data, defaultData);
 
     // put everything from combinedData on this
     for (dataItem in combinedData) {

@@ -8,11 +8,16 @@ var express = require('express'),
     http = require('http'),
     bookrCrawler = require('./dist/bookr-crawler.js'),
     app = express(),
-    provider = [
-        'google',
-        'isbndb',
-        'openlibrary'
-    ];
+    provider = {
+        isbn: [
+            'apple',
+            'openlibrary'
+        ],
+        query: [
+            'google',
+            'isbndb'
+        ]
+    };
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -45,10 +50,12 @@ app.get('/search/:query', function (req, res) {
     if (query && typeof req.params.query === 'string') {
         // has valid query
         bookrCrawler.crawl({
-            provider: provider,
-            query: query,
-            successCallback: successCallback,
-            errorCallback: errorCallback
+            provider: provider.query,
+            query: query
+        }).then(function (data) {
+            var merged = bookrCrawler.merge(data);
+
+            res.send(merged);
         });
     } else {
         // has invalid query
