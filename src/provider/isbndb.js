@@ -18,12 +18,13 @@ providers.isbndb = function () {
                 data;
 
             data = {
+                key: 'isbndb',
                 title: item.title,
                 subtitle: item.title_long,
                 publisher: item.publisher_text,
                 isbn: {
-                    isbn10: item.isbn10,
-                    isbn13: item.isbn13
+                    isbn10: [item.isbn10],
+                    isbn13: [item.isbn13]
                 },
                 authors: []
             };

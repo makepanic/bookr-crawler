@@ -17,6 +17,7 @@ providers.google = function () {
 
             if (volumeInfo) {
                 data = {
+                    key: 'google',
                     title: volumeInfo.title,
                     subtitle: volumeInfo.subtitle,
                     publisher: volumeInfo.publisher,
@@ -35,10 +36,10 @@ providers.google = function () {
                 volumeInfo.industryIdentifiers.forEach(function (isbn) {
                     switch (isbn.type) {
                     case 'ISBN_10':
-                        data.isbn.isbn10 = isbn.identifier;
+                        data.isbn.isbn10 = [isbn.identifier];
                         break;
                     case 'ISBN_13':
-                        data.isbn.isbn13 = isbn.identifier;
+                        data.isbn.isbn13 = [isbn.identifier];
                         break;
                     }
                 });
@@ -46,10 +47,10 @@ providers.google = function () {
                 // convert thumbnails
                 for (imageLink in volumeInfo.imageLinks) {
                     if (volumeInfo.imageLinks.hasOwnProperty(imageLink)) {
-                        if (imageLink.substr(0, 5) === 'small') {
-                            data.thumbnail.small = volumeInfo.imageLinks[volumeInfo];
+                        if (imageLink === 'smallThumbnail') {
+                            data.thumbnail.small = volumeInfo.imageLinks[imageLink];
                         } else {
-                            data.thumbnail.normal = volumeInfo.imageLinks[volumeInfo];
+                            data.thumbnail.normal = volumeInfo.imageLinks[imageLink];
                         }
                     }
                 }

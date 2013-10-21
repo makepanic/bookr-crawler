@@ -4,6 +4,7 @@ BookrCrawler.Book = function (data) {
     'use strict';
 
     var defaultData = {
+            key: '',
             title: '',
             subtitle: '',
             authors: [
@@ -12,8 +13,8 @@ BookrCrawler.Book = function (data) {
             year: '',
             publisher: '',
             isbn: {
-                isbn10: '',
-                isbn13: ''
+                isbn10: [],
+                isbn13: []
             },
             thumbnail: {
                 small: '',

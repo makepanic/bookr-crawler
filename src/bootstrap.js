@@ -3,7 +3,15 @@
 var _ = require('lodash'),
     Q = require('q'),
     BookrCrawler = {
+        _i: 0,
         version: '0.0.1',
+        uid: function () {
+            this._i += 1;
+            return this._i;
+        },
+        constants: {
+            NO_ISBN_KEY: 'NO_ISBN_GIVEN'
+        },
         available: {
             'google': true,
             'isbndb': true,
@@ -11,6 +19,8 @@ var _ = require('lodash'),
         }
     };
 
+require('./util/bookUtil');
+require('./util/variableType');
 require('./model/book');
 require('./provider/provider');
 
