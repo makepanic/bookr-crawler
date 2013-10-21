@@ -3,6 +3,10 @@ var Q = Q || require('q'),
     nconf = nconf || require('nconf'),
     providers = providers || {};
 
+/**
+ * Provider for the google books api
+ * @returns {{crawl: Function}}
+ */
 providers.google = function () {
     'use strict';
 

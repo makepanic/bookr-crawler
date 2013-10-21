@@ -1,5 +1,10 @@
 var _ = require('lodash');
 
+/**
+ * Model that defines the properties for each book
+ * @param data
+ * @constructor
+ */
 BookrCrawler.Book = function (data) {
     'use strict';
 

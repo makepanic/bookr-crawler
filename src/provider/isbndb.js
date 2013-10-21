@@ -8,6 +8,10 @@ nconf.file({ file: 'config.json' });
 
 isbndb = nconf.get('isbndb');
 
+/**
+ * Provider for the isbndb api
+ * @returns {{crawl: Function}}
+ */
 providers.isbndb = function () {
     'use strict';
 

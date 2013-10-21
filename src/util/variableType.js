@@ -89,6 +89,11 @@ var BookrCrawlerUtil = BookrCrawlerUtil || {};
             return is;
         },
 
+        /**
+         * Returns a type for a given value
+         * @param value
+         * @returns {{[object Array]: string, [object Function]: string, [object Number]: string, [object String]: string, [object Object]: string, [object Boolean]: string}}
+         */
         getType: function (value) {
             var toString = checkFn(value);
             return types[typesReverse[toString]](value) ? typesReverse[toString] : undefined;

@@ -34,16 +34,12 @@ app.get('/', function (req, res) {
 });
 
 app.get('/search/:query', function (req, res) {
-    var query = req.params.query,
-        successCallback = function (response) {
-            res.send(JSON.stringify(response));
-        },
-        errorCallback = function (message) {
-            res.send('Error: ' + message);
-        };
+    var query = req.params.query;
 
     if (query && typeof req.params.query === 'string') {
         // has valid query
+
+        // crawl given provider with query
         bookrCrawler.crawl({
             provider: provider,
             query: query
@@ -53,6 +49,7 @@ app.get('/search/:query', function (req, res) {
                 openLibData,
                 easyMergeData;
 
+            // filter special provider
             easyMergeData = data.filter(function (data) {
                 var easyMerge = true;
                 if (data.key === 'openlibrary') {
@@ -62,9 +59,16 @@ app.get('/search/:query', function (req, res) {
                 return easyMerge;
             });
 
+            // simple merge books
             merged = merger.mergeBooks(easyMergeData);
+
+            // merge via openlibrary results
             merged = merger.mergeByOpenLibrarySearch(merged, openLibData);
+
+            // remove unused properties
             merged = merger.finalize(merged);
+
+            // send result
             res.send(merged);
         });
     } else {

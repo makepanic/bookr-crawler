@@ -1,3 +1,8 @@
+/**
+ * Class that can merge books
+ * @param prefer {String}
+ * @constructor
+ */
 BookrCrawler.Merger = function (prefer) {
     'use strict';
 

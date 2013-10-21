@@ -3,6 +3,10 @@ var Q = Q || require('q'),
     nconf = nconf || require('nconf'),
     providers = providers || {};
 
+/**
+ * Provider for the openlibrary api
+ * @returns {{crawl: Function}}
+ */
 providers.openlibrary = function () {
     'use strict';
 

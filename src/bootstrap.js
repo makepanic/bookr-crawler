@@ -11,11 +11,6 @@ var _ = require('lodash'),
         },
         constants: {
             NO_ISBN_KEY: 'NO_ISBN_GIVEN'
-        },
-        available: {
-            'google': true,
-            'isbndb': true,
-            'openlibrary': true
         }
     };
 
@@ -24,6 +19,11 @@ require('./util/variableType');
 require('./model/book');
 require('./provider/provider');
 
+/**
+ * Main method to crawl given provider
+ * @param currentCfg
+ * @returns {*} Promise
+ */
 BookrCrawler.crawl = function (currentCfg) {
     var deferred = Q.defer(),
         defaultCfg = {
@@ -36,8 +36,11 @@ BookrCrawler.crawl = function (currentCfg) {
         promises = [];
 
     provider.forEach(function (p) {
+        // push crawl promise of every provider
         promises.push(BookrCrawler.Provider(p).crawl(query));
     });
+
+    // execute all provider crawl promises
     Q.all(promises).then(function (results) {
         deferred.resolve(results);
     });
