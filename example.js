@@ -5,38 +5,14 @@ var bookrCrawler = require('./dist/bookr-crawler'),
         'isbndb',
         'openlibrary'
     ],
-    query = 'Masters of doom';
+    query = 'Masters of doom',
+    result;
 
-// crawl given provider with query
-bookrCrawler.crawl({
+bookrCrawler.mergeCrawl({
     provider: provider,
-    query: query
-}).then(function (data) {
-
-    var merger = new bookrCrawler.Merger('google'),
-        merged,
-        openLibData,
-        easyMergeData;
-
-    // filter special provider
-    easyMergeData = data.filter(function (data) {
-        var easyMerge = true;
-        if (data.key === 'openlibrary') {
-            openLibData = data;
-            easyMerge = false;
-        }
-        return easyMerge;
-    });
-
-    // simple merge books
-    merged = merger.mergeBooks(easyMergeData);
-
-    // merge via openlibrary results
-    merged = merger.mergeOpenLibrary(merged, openLibData);
-
-    // remove unused properties
-    merged = merger.finalize(merged);
-
-    // send result
-    console.log('search result', merged);
+    query: query,
+    prefer: 'google'
+}).then(function (result) {
+    console.log('mergeSearch result', result);
 });
+

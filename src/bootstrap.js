@@ -21,33 +21,6 @@ require('./util/variableType');
 require('./model/book');
 require('./provider/provider');
 
-/**
- * Main method to crawl given provider
- * @param currentCfg
- * @returns {*} Promise
- */
-BookrCrawler.crawl = function (currentCfg) {
-    var deferred = Q.defer(),
-        defaultCfg = {
-            provider: [],
-            query: ''
-        },
-        cfg = _.extend(defaultCfg, currentCfg),
-        provider = cfg.provider,
-        query = cfg.query,
-        promises = [];
-
-    provider.forEach(function (p) {
-        // push crawl promise of every provider
-        promises.push(BookrCrawler.Provider(p).crawl(query));
-    });
-
-    // execute all provider crawl promises
-    Q.all(promises).then(function (results) {
-        deferred.resolve(results);
-    });
-
-    return deferred.promise;
-};
+require('./common');
 
 require('./merge/merger');
