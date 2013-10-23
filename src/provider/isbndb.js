@@ -4,7 +4,7 @@ var Q = Q || require('q'),
     providers = providers || {},
     isbndb;
 
-nconf.file({ file: 'config.json' });
+nconf.file({ file: 'bookr-config.json' });
 
 isbndb = nconf.get('isbndb');
 

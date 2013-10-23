@@ -2,6 +2,7 @@
 
 var _ = require('lodash'),
     Q = require('q'),
+    Bookr = {},
     BookrCrawler = {
         _i: 0,
         version: '0.0.1',
@@ -14,6 +15,7 @@ var _ = require('lodash'),
         }
     };
 
+require('./util/asyncHelper');
 require('./util/bookUtil');
 require('./util/variableType');
 require('./model/book');
@@ -48,4 +50,4 @@ BookrCrawler.crawl = function (currentCfg) {
     return deferred.promise;
 };
 
-require('./merger');
+require('./merge/merger');
