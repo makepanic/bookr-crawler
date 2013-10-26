@@ -1,7 +1,7 @@
 {
   "name": "bookr-crawler",
   "description": "crawler for the bookr project",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "license": "GPLv2",
   "main": "dist/bookr-crawler.js",
   "private": true,

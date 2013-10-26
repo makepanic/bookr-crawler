@@ -851,7 +851,7 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
                         for (prop in book) {
                             if (book.hasOwnProperty(prop)) {
 
-                                type = BookrCrawlerUtil.Type.getType(book[key]);
+                                type = BookrCrawlerUtil.Type.getType(book[prop]);
                                 uniqueBook[prop] = BookrCrawler.Merger.mergeRules[type](uniqueBook[prop], book[prop]);
 
                             }
