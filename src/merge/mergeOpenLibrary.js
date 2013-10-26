@@ -34,6 +34,10 @@ BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySear
             }
         });
 
+        // sort isbn10 and isbn13 to make md5 more deterministic
+        book.isbn.isbn10 = book.isbn.isbn10.sort();
+        book.isbn.isbn13 = book.isbn.isbn13.sort();
+
         if (!mergedBook.empty) {
             // remove empty flag
             delete mergedBook.empty;
