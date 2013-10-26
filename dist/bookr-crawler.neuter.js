@@ -5,7 +5,7 @@ var _ = require('lodash'),
     Bookr = {},
     BookrCrawler = {
         _i: 0,
-        version: '0.0.1',
+        version: '0.1.4',
         uid: function () {
             this._i += 1;
             return this._i;
@@ -167,9 +167,7 @@ BookrCrawler.Book = function (data) {
             key: '',
             title: '',
             subtitle: '',
-            authors: [
-                ''
-            ],
+            authors: [],
             year: '',
             publisher: '',
             isbn: {
@@ -183,7 +181,7 @@ BookrCrawler.Book = function (data) {
             textSnippet: ''
         },
         dataItem,
-        combinedData = _.defaults(data, defaultData);
+        combinedData = _.merge(defaultData, data);
 
     // put everything from combinedData on this
     for (dataItem in combinedData) {
@@ -579,6 +577,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
         // filter special provider
         easyMergeData = data.filter(function (data) {
             var easyMerge = true;
+
             if (data.key === 'openlibrary') {
                 openLibData = data;
                 easyMerge = false;

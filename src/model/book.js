@@ -13,9 +13,7 @@ BookrCrawler.Book = function (data) {
             key: '',
             title: '',
             subtitle: '',
-            authors: [
-                ''
-            ],
+            authors: [],
             year: '',
             publisher: '',
             isbn: {
@@ -29,7 +27,7 @@ BookrCrawler.Book = function (data) {
             textSnippet: ''
         },
         dataItem,
-        combinedData = _.defaults(data, defaultData);
+        combinedData = _.merge(defaultData, data);
 
     // put everything from combinedData on this
     for (dataItem in combinedData) {

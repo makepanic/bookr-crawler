@@ -54,6 +54,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
         // filter special provider
         easyMergeData = data.filter(function (data) {
             var easyMerge = true;
+
             if (data.key === 'openlibrary') {
                 openLibData = data;
                 easyMerge = false;

@@ -5,7 +5,7 @@ var _ = require('lodash'),
     Bookr = {},
     BookrCrawler = {
         _i: 0,
-        version: '0.0.1',
+        version: '0.1.4',
         uid: function () {
             this._i += 1;
             return this._i;
