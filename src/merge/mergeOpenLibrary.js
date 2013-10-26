@@ -27,7 +27,7 @@ BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySear
                 mergedBook.empty = false;
 
                 // merge found book with openlib merged book
-                mergedBook = that.merge(mergedBook, dump[isbn]);
+                mergedBook = new BookrCrawler.Book(that.merge(mergedBook, dump[isbn]));
 
                 // remove book from dump
                 delete dump[isbn];

@@ -43,8 +43,8 @@ BookrCrawler.Merger.prototype.finalize = function (books) {
 
     for (key in books) {
         if (books.hasOwnProperty(key)) {
-            // remove provider key
-            delete books[key].key;
+            // prepare for storage
+            books[key] = books[key].forStorage();
         }
     }
 

@@ -152,7 +152,8 @@ var BookrCrawlerUtil = BookrCrawlerUtil || {};
     };
 }(BookrCrawlerUtil));
 
-var _ = require('lodash');
+var _ = require('lodash'),
+    md5 = md5 || require('MD5');
 
 /**
  * Model that defines the properties for each book
@@ -190,6 +191,22 @@ BookrCrawler.Book = function (data) {
             this[dataItem] = combinedData[dataItem];
         }
     }
+};
+BookrCrawler.Book.prototype.forStorage = function () {
+    var storageVars = ['title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'thumbnail', 'textSnippet'],
+        result = {},
+        book = this;
+
+    storageVars.forEach(function (storageVar) {
+        if (book.hasOwnProperty(storageVar)) {
+            result[storageVar] = book[storageVar];
+        }
+    });
+
+    // add md5sum from book
+    result.hash = md5(JSON.stringify(result));
+
+    return result;
 };
 
 (function (BookrCrawler) {
@@ -633,8 +650,8 @@ BookrCrawler.Merger.prototype.finalize = function (books) {
 
     for (key in books) {
         if (books.hasOwnProperty(key)) {
-            // remove provider key
-            delete books[key].key;
+            // prepare for storage
+            books[key] = books[key].forStorage();
         }
     }
 
@@ -730,7 +747,7 @@ BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySear
                 mergedBook.empty = false;
 
                 // merge found book with openlib merged book
-                mergedBook = that.merge(mergedBook, dump[isbn]);
+                mergedBook = new BookrCrawler.Book(that.merge(mergedBook, dump[isbn]));
 
                 // remove book from dump
                 delete dump[isbn];
