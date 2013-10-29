@@ -5,7 +5,7 @@ var bookrCrawler = require('./dist/bookr-crawler'),
         'isbndb',
         'openlibrary'
     ],
-    query = 'Masters of doom',
+    query = 'Masters of Doom',
     result;
 
 bookrCrawler.mergeCrawl({
@@ -13,6 +13,6 @@ bookrCrawler.mergeCrawl({
     query: query,
     prefer: 'google'
 }).then(function (result) {
-    console.log('mergeSearch result', result);
+    console.log('mergeSearch result', JSON.stringify(result));
 });
 

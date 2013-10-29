@@ -657,16 +657,17 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
  */
 BookrCrawler.Merger.prototype.finalize = function (books) {
     'use strict';
-    var key;
+    var key,
+        bookArray = [];
 
     for (key in books) {
         if (books.hasOwnProperty(key)) {
             // prepare for storage
-            books[key] = books[key].forStorage();
+            bookArray.push(books[key].forStorage());
         }
     }
 
-    return books;
+    return bookArray;
 };
 
 /**
