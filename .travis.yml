@@ -4,7 +4,7 @@ node_js:
 before_script:
   - npm install --quiet -g grunt-cli
 script:
-  - grunt ci
+  - grunt test
 branches:
   only:
     - master
