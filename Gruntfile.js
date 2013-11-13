@@ -32,15 +32,22 @@ module.exports = function (grunt) {
                     spawn: false
                 }
             }
+        },
+
+        // @see https://github.com/caolan/nodeunit
+        nodeunit: {
+            all: ['tests/**/*.test.js']
         }
     });
 
     grunt.loadNpmTasks('grunt-neuter');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
     // Default task(s).
     grunt.registerTask('default', ['neuter', 'concat']);
     grunt.registerTask('dev', ['neuter', 'concat', 'watch']);
+    grunt.registerTask('test', ['neuter', 'concat', 'nodeunit']);
 
 };
