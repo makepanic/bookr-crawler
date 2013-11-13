@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "0.10"
+before_script:
+  - npm install --quiet -g grunt-cli
+script:
+  - grunt ci
+branches:
+  only:
+    - master
+    - develop
+    - tests
