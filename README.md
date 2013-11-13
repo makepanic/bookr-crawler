@@ -1,2 +1,1 @@
-bookr-crawler
-=============
+#bookr-crawler [![Build Status](https://travis-ci.org/makepanic/bookr-crawler.png?branch=tests)](https://travis-ci.org/makepanic/bookr-crawler)
