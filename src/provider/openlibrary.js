@@ -39,7 +39,7 @@ providers.openlibrary = function () {
             // loop through each isbn
             item.isbn.forEach(function (isbn) {
                 // add isbn to fitting isbn type (13 or 10)
-                var type = BookrCrawlerUtil.BookUtil.isbnType(isbn);
+                var type = BookrCrawler.Util.Book.isbnType(isbn);
                 if (type) {
                     data.isbn[type].push(isbn);
                 }

@@ -1,4 +1,3 @@
-var BookrCrawlerUtil = BookrCrawlerUtil || {};
 (function (BookrCrawlerUtil) {
     'use strict';
 
@@ -99,4 +98,4 @@ var BookrCrawlerUtil = BookrCrawlerUtil || {};
             return types[typesReverse[toString]](value) ? typesReverse[toString] : undefined;
         }
     };
-}(BookrCrawlerUtil));
+}(BookrCrawler.Util));

@@ -12,7 +12,8 @@ var _ = require('lodash'),
         },
         constants: {
             NO_ISBN_KEY: 'NO_ISBN_GIVEN'
-        }
+        },
+        Util: {}
     };
 
 
@@ -31,25 +32,24 @@ Bookr.AsyncHelper = {
         return defer.promise;
 
     }
-}
+};
 
-var BookrCrawlerUtil = BookrCrawlerUtil || {};
-BookrCrawlerUtil.BookUtil = {
+BookrCrawler.Util.Book = {
     /**
      * Checks if a given string equals isbn13 or isbn10.
      * Returns {undefined} if invalid.
-     * @param string
+     * @param value
      * @returns {string}
      */
-    isbnType: function (string) {
+    isbnType: function (value) {
         'use strict';
 
-        var strLen = string.length;
+        // check if value is string and use length, otherwise length is 0
+        var strLen = Object.prototype.toString.call(value) === '[object String]' ? value.length : 0;
         return strLen === 13 ? 'isbn13' : strLen === 10 ? 'isbn10' : undefined;
     }
 };
 
-var BookrCrawlerUtil = BookrCrawlerUtil || {};
 (function (BookrCrawlerUtil) {
     'use strict';
 
@@ -150,7 +150,7 @@ var BookrCrawlerUtil = BookrCrawlerUtil || {};
             return types[typesReverse[toString]](value) ? typesReverse[toString] : undefined;
         }
     };
-}(BookrCrawlerUtil));
+}(BookrCrawler.Util));
 
 var _ = require('lodash'),
     md5 = md5 || require('MD5');
@@ -450,7 +450,7 @@ providers.openlibrary = function () {
             // loop through each isbn
             item.isbn.forEach(function (isbn) {
                 // add isbn to fitting isbn type (13 or 10)
-                var type = BookrCrawlerUtil.BookUtil.isbnType(isbn);
+                var type = BookrCrawler.Util.Book.isbnType(isbn);
                 if (type) {
                     data.isbn[type].push(isbn);
                 }
@@ -632,14 +632,9 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
         if (source.hasOwnProperty(key)) {
 
             if (destination.hasOwnProperty(key)) {
+                type = BookrCrawler.Util.Type.getType(source[key]);
+                destination[key] = BookrCrawler.Merger.mergeRules[type](destination[key], source[key], source.key === this.prefer);
 
-                if (source.key === this.prefer) {
-                    destination[key] = source[key];
-                } else {
-                    type = BookrCrawlerUtil.Type.getType(source[key]);
-
-                    destination[key] = BookrCrawler.Merger.mergeRules[type](destination[key], source[key]);
-                }
             } else {
                 destination[key] = source[key];
             }
@@ -675,7 +670,7 @@ BookrCrawler.Merger.prototype.finalize = function (books) {
  * @type {{array: Function, string: Function, object: Function}}
  */
 BookrCrawler.Merger.mergeRules = {
-    'array': function (a, b) {
+    'array': function (a, b, overwriteAIfB) {
         'use strict';
 
         var concat = a.concat(b);
@@ -685,13 +680,13 @@ BookrCrawler.Merger.mergeRules = {
             return concat.indexOf(elem) === pos;
         });
     },
-    'string': function (a, b) {
+    'string': function (a, b, overwriteAIfB) {
         'use strict';
         var merged = '';
         if ((a === undefined || b === undefined) && a !== b) {
             merged = a || b;
         } else {
-            merged = a.length > b.length ? a : b;
+            merged = a.length > b.length && !(overwriteAIfB && b.length > 0) ? a : b;
         }
 
         return merged;
@@ -717,7 +712,7 @@ BookrCrawler.Merger.mergeRules = {
             if (src.hasOwnProperty(key)) {
 
                 if (dest.hasOwnProperty(key)) {
-                    type = BookrCrawlerUtil.Type.getType(src[key]);
+                    type = BookrCrawler.Util.Type.getType(src[key]);
 
                     dest[key] = BookrCrawler.Merger.mergeRules[type](dest[key], src[key]);
                 } else {

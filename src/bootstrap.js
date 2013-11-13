@@ -12,12 +12,15 @@ var _ = require('lodash'),
         },
         constants: {
             NO_ISBN_KEY: 'NO_ISBN_GIVEN'
-        }
+        },
+        Util: {}
     };
 
 require('./util/asyncHelper');
 require('./util/bookUtil');
+
 require('./util/variableType');
+
 require('./model/book');
 require('./provider/provider');
 

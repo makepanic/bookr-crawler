@@ -13,4 +13,4 @@ Bookr.AsyncHelper = {
         return defer.promise;
 
     }
-}
+};

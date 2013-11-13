@@ -14,14 +14,9 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
         if (source.hasOwnProperty(key)) {
 
             if (destination.hasOwnProperty(key)) {
+                type = BookrCrawler.Util.Type.getType(source[key]);
+                destination[key] = BookrCrawler.Merger.mergeRules[type](destination[key], source[key], source.key === this.prefer);
 
-                if (source.key === this.prefer) {
-                    destination[key] = source[key];
-                } else {
-                    type = BookrCrawlerUtil.Type.getType(source[key]);
-
-                    destination[key] = BookrCrawler.Merger.mergeRules[type](destination[key], source[key]);
-                }
             } else {
                 destination[key] = source[key];
             }
