@@ -9,10 +9,9 @@ BookrCrawler.Merger.mergeRules = {
      *
      * @param a {Array} destination
      * @param b {Array} source
-     * @param overwriteAIfB {Boolean}
      * @returns {Array} merged array
      */
-    'array': function (a, b, overwriteAIfB) {
+    'array': function (a, b) {
         'use strict';
 
         var concat = a.concat(b);
@@ -29,7 +28,7 @@ BookrCrawler.Merger.mergeRules = {
      *
      * @param a {String} destination
      * @param b {String} source
-     * @param overwriteAIfB {Boolean}
+     * @param overwriteAIfB {Boolean} overwrite a if b is not empt
      * @returns {String} merged string
      */
     'string': function (a, b, overwriteAIfB) {

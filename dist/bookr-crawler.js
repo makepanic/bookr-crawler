@@ -690,10 +690,9 @@ BookrCrawler.Merger.mergeRules = {
      *
      * @param a {Array} destination
      * @param b {Array} source
-     * @param overwriteAIfB {Boolean}
      * @returns {Array} merged array
      */
-    'array': function (a, b, overwriteAIfB) {
+    'array': function (a, b) {
         'use strict';
 
         var concat = a.concat(b);
@@ -710,7 +709,7 @@ BookrCrawler.Merger.mergeRules = {
      *
      * @param a {String} destination
      * @param b {String} source
-     * @param overwriteAIfB {Boolean}
+     * @param overwriteAIfB {Boolean} overwrite a if b is not empt
      * @returns {String} merged string
      */
     'string': function (a, b, overwriteAIfB) {
@@ -834,7 +833,7 @@ BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySear
  *
  * At the moment it merges if the duplicated book has a prefered origin key (e.g. 'google').
  *
- * @param dump {Array} books
+ * @param {Array} dump books
  * @returns {Object} Hashmap of unique books by identifier
  */
 BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
@@ -878,8 +877,8 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
                         for (prop in book) {
                             if (book.hasOwnProperty(prop)) {
 
-                                type = BookrCrawlerUtil.Type.getType(book[prop]);
-                                uniqueBook[prop] = BookrCrawler.Merger.mergeRules[type](uniqueBook[prop], book[prop]);
+                                type = BookrCrawler.Util.Type.getType(book[prop]);
+                                uniqueBook[prop] = BookrCrawler.Merger.mergeRules[type](uniqueBook[prop], book[prop], preferThis);
 
                             }
                         }
@@ -890,7 +889,6 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
                         // store book in uniquebooks
                         uniqueBooks[id] = book;
                     }
-
                 });
             }
         });

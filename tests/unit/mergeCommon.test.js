@@ -2,7 +2,7 @@ var bookrCrawler = require('../../dist/bookr-crawler'),
     testUtils = require('../testUtils');
 
 /**
- * test for book model initialization with various values
+ * test for book merger merge
  * @param test
  */
 
