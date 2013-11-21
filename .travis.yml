@@ -9,4 +9,3 @@ branches:
   only:
     - master
     - develop
-    - tests

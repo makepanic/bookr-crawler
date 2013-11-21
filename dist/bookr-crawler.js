@@ -618,14 +618,15 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
 
 /**
  * Class that can merge books
- * @param prefer {String}
+ * @param {String} prefer
+ * @param {String} [isbnIdentifer=isbn13]
  * @constructor
  */
-BookrCrawler.Merger = function (prefer) {
+BookrCrawler.Merger = function (prefer, isbnIdentifer) {
     'use strict';
 
     this.prefer = prefer;
-    this.isbnIdentifier = 'isbn13';
+    this.isbnIdentifier = isbnIdentifer || 'isbn13';
     this.openLibIdentifier = 'OPENLIBRARY';
 };
 
