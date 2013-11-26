@@ -13,6 +13,6 @@ bookrCrawler.mergeCrawl({
     query: query,
     prefer: 'google'
 }).then(function (result) {
-    console.log('mergeSearch result', JSON.stringify(result));
+    console.log('mergeCrawl done', result);
 });
 

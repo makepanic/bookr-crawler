@@ -22,7 +22,8 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
     dump.forEach(function (dumpItem) {
         var key = dumpItem.key,
             data = dumpItem.data,
-            preferThis = !!(key === prefer);
+            preferThis = !!(key === prefer),
+            isbn;
 
         beforeMerge += data.length;
 
@@ -33,36 +34,35 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
                 uniqueBooks[noIsbnKey + BookrCrawler.uid()] = book;
             } else {
                 // loop through each ispn and update/create unique book
-                book.isbn[uid].forEach(function (id) {
+                isbn = book.isbn[uid];
 
-                    var alreadyStored = uniqueBooks.hasOwnProperty(id),
-                        prop,
-                        uniqueBook,
-                        uniqueVal,
-                        type;
+                var alreadyStored = uniqueBooks.hasOwnProperty(isbn),
+                    prop,
+                    uniqueBook,
+                    uniqueVal,
+                    type;
 
-                    // check if there is something in unique map
-                    if (alreadyStored) {
-                        // load stored book
-                        uniqueBook = uniqueBooks[id];
+                // check if there is something in unique map
+                if (alreadyStored) {
+                    // load stored book
+                    uniqueBook = uniqueBooks[isbn];
 
-                        // loop through each property in the book object
-                        for (prop in book) {
-                            if (book.hasOwnProperty(prop)) {
+                    // loop through each property in the book object
+                    for (prop in book) {
+                        if (book.hasOwnProperty(prop)) {
 
-                                type = BookrCrawler.Util.Type.getType(book[prop]);
-                                uniqueBook[prop] = BookrCrawler.Merger.mergeRules[type](uniqueBook[prop], book[prop], preferThis);
+                            type = BookrCrawler.Util.Type.getType(book[prop]);
+                            uniqueBook[prop] = BookrCrawler.Merger.mergeRules[type](uniqueBook[prop], book[prop], preferThis);
 
-                            }
                         }
-                        // store updated book
-                        uniqueBooks[id] = uniqueBook;
-
-                    } else {
-                        // store book in uniquebooks
-                        uniqueBooks[id] = book;
                     }
-                });
+                    // store updated book
+                    uniqueBooks[isbn] = uniqueBook;
+
+                } else {
+                    // store book in uniquebooks
+                    uniqueBooks[isbn] = book;
+                }
             }
         });
     });

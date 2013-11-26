@@ -20,6 +20,9 @@ var _ = require('lodash'),
     BookrCrawler = {
         _i: 0,
         version: '0.1.4',
+        /**
+         * @returns {Number}
+         */
         uid: function () {
             this._i += 1;
             return this._i;
@@ -182,11 +185,12 @@ BookrCrawler.Book = function (data) {
             title: '',
             subtitle: '',
             authors: [],
+            superBook: '',
             year: '',
             publisher: '',
             isbn: {
-                isbn10: [],
-                isbn13: []
+                isbn10: '',
+                isbn13: ''
             },
             thumbnail: {
                 small: '',
@@ -205,8 +209,69 @@ BookrCrawler.Book = function (data) {
     }
 };
 BookrCrawler.Book.prototype.forStorage = function () {
-    var storageVars = ['title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet', 'thumbnail'],
+    var storageVars = ['superBook', 'title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet', 'thumbnail'],
         forMd5 = ['title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet'],
+        md5props,
+        result,
+        book = this;
+
+    function objectFromProps(source, props) {
+        var result = {};
+        // create object with given properties from this book
+        props.forEach(function (prop) {
+            if (source.hasOwnProperty(prop)) {
+                result[prop] = source[prop];
+            }
+        });
+        return result;
+    }
+
+    // generate object from book using storageVars array
+    result = objectFromProps(book, storageVars);
+    // generate object from results using forMd5 array
+    md5props = objectFromProps(result, forMd5);
+
+    // add md5sum from md5props object
+    result.hash = md5(JSON.stringify(md5props));
+
+    return result;
+};
+
+var _ = require('lodash'),
+    md5 = md5 || require('MD5');
+
+/**
+ * Model that defines the properties for each book
+ * @param data
+ * @constructor
+ */
+BookrCrawler.SuperBook = function (data) {
+    'use strict';
+
+    var defaultData = {
+            _id: '',
+            title: '',
+            subtitle: '',
+            authors: [],
+            year: '',
+            isbn: {
+                isbn10: [],
+                isbn13: []
+            }
+        },
+        dataItem,
+        combinedData = _.merge(defaultData, data);
+
+    // put everything from combinedData on this
+    for (dataItem in combinedData) {
+        if (combinedData.hasOwnProperty(dataItem)) {
+            this[dataItem] = combinedData[dataItem];
+        }
+    }
+};
+BookrCrawler.SuperBook.prototype.forStorage = function () {
+    var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbn'],
+        forMd5 = ['title', 'subtitle', 'authors', 'isbn'],
         md5props,
         result,
         book = this;
@@ -280,10 +345,10 @@ providers.google = function () {
                 volumeInfo.industryIdentifiers.forEach(function (isbn) {
                     switch (isbn.type) {
                     case 'ISBN_10':
-                        data.isbn.isbn10 = [isbn.identifier];
+                        data.isbn.isbn10 = isbn.identifier;
                         break;
                     case 'ISBN_13':
-                        data.isbn.isbn13 = [isbn.identifier];
+                        data.isbn.isbn13 = isbn.identifier;
                         break;
                     }
                 });
@@ -371,8 +436,8 @@ providers.isbndb = function () {
                 subtitle: item.title_long,
                 publisher: item.publisher_text,
                 isbn: {
-                    isbn10: [item.isbn10],
-                    isbn13: [item.isbn13]
+                    isbn10: item.isbn10,
+                    isbn13: item.isbn13
                 },
                 authors: []
             };
@@ -445,32 +510,27 @@ providers.openlibrary = function () {
                 key: 'openlibrary',
                 title: item.title,
                 subtitle: item.subtitle,
-                publisher: item.publisher,
                 isbn: {
                     isbn10: [],
                     isbn13: []
                 },
                 authors: item.author_name,
                 year: item.first_publish_year,
-                textSnippet: item.first_sentence
+                textSnippet: item.first_sentence && item.first_sentence.length ? item.first_sentence[0] : '',
+                _id: item.key
             };
 
-            // check if item has isbn
-            if (!item.isbn) {
-                // create unique isbn identifier
-                item.isbn = [BookrCrawler.constants.NO_ISBN_KEY + BookrCrawler.uid()];
+            if (item.isbn) {
+                item.isbn.forEach(function (isbn) {
+                    // add isbn to fitting isbn type (13 or 10)
+                    var type = BookrCrawler.Util.Book.isbnType(isbn);
+                    if (type) {
+                        data.isbn[type].push(isbn);
+                    }
+                });
             }
 
-            // loop through each isbn
-            item.isbn.forEach(function (isbn) {
-                // add isbn to fitting isbn type (13 or 10)
-                var type = BookrCrawler.Util.Book.isbnType(isbn);
-                if (type) {
-                    data.isbn[type].push(isbn);
-                }
-            });
-
-            book = new BookrCrawler.Book(data);
+            book = new BookrCrawler.SuperBook(data);
 
             return book;
         };
@@ -588,6 +648,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
             openLibData,
             easyMergeData;
 
+
         // filter special provider
         easyMergeData = data.filter(function (data) {
             var easyMerge = true;
@@ -596,6 +657,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
                 openLibData = data;
                 easyMerge = false;
             }
+
             return easyMerge;
         });
 
@@ -603,13 +665,19 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
         merged = merger.mergeBooks(easyMergeData);
 
         // merge via openlibrary results
-        merged = merger.mergeOpenLibrary(merged, openLibData);
+        merged = merger.generateSuperBookRelations(merged, openLibData);
 
         // remove unused properties
         merged = merger.finalize(merged);
 
+        // merge openlibdata
+        openLibData = merger.finalize(openLibData.data, true);
+
         setTimeout(function () {
-            deferred.resolve(merged);
+            deferred.resolve({
+                versions: merged,
+                superBooks: openLibData
+            });
         }, 14);
 
         return deferred.promise;
@@ -663,18 +731,25 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
  * Finalizes each book object.
  * - removes provider key
  * @param books
+ * @param {Boolean} isSuperBook
  * @returns {*}
  */
-BookrCrawler.Merger.prototype.finalize = function (books) {
+BookrCrawler.Merger.prototype.finalize = function (books, isSuperBook) {
     'use strict';
     var key,
         bookArray = [];
 
-    for (key in books) {
-        if (books.hasOwnProperty(key)) {
-            // prepare for storage
-            bookArray.push(books[key].forStorage());
+    if (!isSuperBook) {
+        for (key in books) {
+            if (books.hasOwnProperty(key)) {
+                // prepare for storage
+                bookArray.push(books[key].forStorage());
+            }
         }
+    } else {
+        bookArray = books.map(function (book) {
+            return book.forStorage();
+        });
     }
 
     return bookArray;
@@ -776,26 +851,31 @@ BookrCrawler.Merger.mergeRules = {
  * Merges books by checking if their isbn exists in the OpenLibrary search results. The OpenLibrary results can return
  * multiple isbns for 1 book.
  * @param dump
- * @param openLibrarySearch
+ * @param superBooks
  */
-BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySearch) {
+BookrCrawler.Merger.prototype.generateSuperBookRelations = function (dump, superBooks) {
     'use strict';
 
     var that = this,
         mergedBook,
+        isbn,
         beforeMerge = Object.keys(dump).length;
 
-    openLibrarySearch.data.forEach(function (book) {
+    superBooks.data.forEach(function (superBook) {
         mergedBook = {
             // flag that allows to check if a existing book was found
             empty: true
         };
 
         // loop through each isbn from the openlib book object
-        book.isbn[that.isbnIdentifier].forEach(function (isbn) {
-
+        isbn = superBook.isbn[that.isbnIdentifier];
+        superBook.isbn[that.isbnIdentifier].forEach(function (isbn) {
             // check if there exist a book with a given isbn
             if (dump.hasOwnProperty(isbn)) {
+
+                // create superBook reference
+                dump[isbn].superBook = superBook._id;
+
                 // change empty flag
                 mergedBook.empty = false;
 
@@ -807,9 +887,6 @@ BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySear
             }
         });
 
-        // sort isbn10 and isbn13 to make md5 more deterministic
-        book.isbn.isbn10 = book.isbn.isbn10.sort();
-        book.isbn.isbn13 = book.isbn.isbn13.sort();
 
         if (!mergedBook.empty) {
             // remove empty flag
@@ -851,7 +928,8 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
     dump.forEach(function (dumpItem) {
         var key = dumpItem.key,
             data = dumpItem.data,
-            preferThis = !!(key === prefer);
+            preferThis = !!(key === prefer),
+            isbn;
 
         beforeMerge += data.length;
 
@@ -862,36 +940,35 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
                 uniqueBooks[noIsbnKey + BookrCrawler.uid()] = book;
             } else {
                 // loop through each ispn and update/create unique book
-                book.isbn[uid].forEach(function (id) {
+                isbn = book.isbn[uid];
 
-                    var alreadyStored = uniqueBooks.hasOwnProperty(id),
-                        prop,
-                        uniqueBook,
-                        uniqueVal,
-                        type;
+                var alreadyStored = uniqueBooks.hasOwnProperty(isbn),
+                    prop,
+                    uniqueBook,
+                    uniqueVal,
+                    type;
 
-                    // check if there is something in unique map
-                    if (alreadyStored) {
-                        // load stored book
-                        uniqueBook = uniqueBooks[id];
+                // check if there is something in unique map
+                if (alreadyStored) {
+                    // load stored book
+                    uniqueBook = uniqueBooks[isbn];
 
-                        // loop through each property in the book object
-                        for (prop in book) {
-                            if (book.hasOwnProperty(prop)) {
+                    // loop through each property in the book object
+                    for (prop in book) {
+                        if (book.hasOwnProperty(prop)) {
 
-                                type = BookrCrawler.Util.Type.getType(book[prop]);
-                                uniqueBook[prop] = BookrCrawler.Merger.mergeRules[type](uniqueBook[prop], book[prop], preferThis);
+                            type = BookrCrawler.Util.Type.getType(book[prop]);
+                            uniqueBook[prop] = BookrCrawler.Merger.mergeRules[type](uniqueBook[prop], book[prop], preferThis);
 
-                            }
                         }
-                        // store updated book
-                        uniqueBooks[id] = uniqueBook;
-
-                    } else {
-                        // store book in uniquebooks
-                        uniqueBooks[id] = book;
                     }
-                });
+                    // store updated book
+                    uniqueBooks[isbn] = uniqueBook;
+
+                } else {
+                    // store book in uniquebooks
+                    uniqueBooks[isbn] = book;
+                }
             }
         });
     });

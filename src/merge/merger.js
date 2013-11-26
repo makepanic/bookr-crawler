@@ -14,5 +14,5 @@ BookrCrawler.Merger = function (prefer, isbnIdentifer) {
 
 require('./mergeCommon');
 require('./mergeRules');
-require('./mergeOpenLibrary');
+require('./generateSuperBookRelations');
 require('./mergeBooks');

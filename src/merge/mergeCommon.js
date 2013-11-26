@@ -30,18 +30,25 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
  * Finalizes each book object.
  * - removes provider key
  * @param books
+ * @param {Boolean} isSuperBook
  * @returns {*}
  */
-BookrCrawler.Merger.prototype.finalize = function (books) {
+BookrCrawler.Merger.prototype.finalize = function (books, isSuperBook) {
     'use strict';
     var key,
         bookArray = [];
 
-    for (key in books) {
-        if (books.hasOwnProperty(key)) {
-            // prepare for storage
-            bookArray.push(books[key].forStorage());
+    if (!isSuperBook) {
+        for (key in books) {
+            if (books.hasOwnProperty(key)) {
+                // prepare for storage
+                bookArray.push(books[key].forStorage());
+            }
         }
+    } else {
+        bookArray = books.map(function (book) {
+            return book.forStorage();
+        });
     }
 
     return bookArray;

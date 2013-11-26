@@ -3,26 +3,31 @@
  * Merges books by checking if their isbn exists in the OpenLibrary search results. The OpenLibrary results can return
  * multiple isbns for 1 book.
  * @param dump
- * @param openLibrarySearch
+ * @param superBooks
  */
-BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySearch) {
+BookrCrawler.Merger.prototype.generateSuperBookRelations = function (dump, superBooks) {
     'use strict';
 
     var that = this,
         mergedBook,
+        isbn,
         beforeMerge = Object.keys(dump).length;
 
-    openLibrarySearch.data.forEach(function (book) {
+    superBooks.data.forEach(function (superBook) {
         mergedBook = {
             // flag that allows to check if a existing book was found
             empty: true
         };
 
         // loop through each isbn from the openlib book object
-        book.isbn[that.isbnIdentifier].forEach(function (isbn) {
-
+        isbn = superBook.isbn[that.isbnIdentifier];
+        superBook.isbn[that.isbnIdentifier].forEach(function (isbn) {
             // check if there exist a book with a given isbn
             if (dump.hasOwnProperty(isbn)) {
+
+                // create superBook reference
+                dump[isbn].superBook = superBook._id;
+
                 // change empty flag
                 mergedBook.empty = false;
 
@@ -34,9 +39,6 @@ BookrCrawler.Merger.prototype.mergeOpenLibrary = function (dump, openLibrarySear
             }
         });
 
-        // sort isbn10 and isbn13 to make md5 more deterministic
-        book.isbn.isbn10 = book.isbn.isbn10.sort();
-        book.isbn.isbn13 = book.isbn.isbn13.sort();
 
         if (!mergedBook.empty) {
             // remove empty flag

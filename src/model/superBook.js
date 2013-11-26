@@ -6,26 +6,19 @@ var _ = require('lodash'),
  * @param data
  * @constructor
  */
-BookrCrawler.Book = function (data) {
+BookrCrawler.SuperBook = function (data) {
     'use strict';
 
     var defaultData = {
-            key: '',
+            _id: '',
             title: '',
             subtitle: '',
             authors: [],
-            superBook: '',
             year: '',
-            publisher: '',
             isbn: {
-                isbn10: '',
-                isbn13: ''
-            },
-            thumbnail: {
-                small: '',
-                normal: ''
-            },
-            textSnippet: ''
+                isbn10: [],
+                isbn13: []
+            }
         },
         dataItem,
         combinedData = _.merge(defaultData, data);
@@ -37,9 +30,9 @@ BookrCrawler.Book = function (data) {
         }
     }
 };
-BookrCrawler.Book.prototype.forStorage = function () {
-    var storageVars = ['superBook', 'title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet', 'thumbnail'],
-        forMd5 = ['title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet'],
+BookrCrawler.SuperBook.prototype.forStorage = function () {
+    var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbn'],
+        forMd5 = ['title', 'subtitle', 'authors', 'isbn'],
         md5props,
         result,
         book = this;

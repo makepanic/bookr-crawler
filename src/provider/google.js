@@ -40,10 +40,10 @@ providers.google = function () {
                 volumeInfo.industryIdentifiers.forEach(function (isbn) {
                     switch (isbn.type) {
                     case 'ISBN_10':
-                        data.isbn.isbn10 = [isbn.identifier];
+                        data.isbn.isbn10 = isbn.identifier;
                         break;
                     case 'ISBN_13':
-                        data.isbn.isbn13 = [isbn.identifier];
+                        data.isbn.isbn13 = isbn.identifier;
                         break;
                     }
                 });

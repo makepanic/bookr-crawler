@@ -51,6 +51,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
             openLibData,
             easyMergeData;
 
+
         // filter special provider
         easyMergeData = data.filter(function (data) {
             var easyMerge = true;
@@ -59,6 +60,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
                 openLibData = data;
                 easyMerge = false;
             }
+
             return easyMerge;
         });
 
@@ -66,13 +68,19 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
         merged = merger.mergeBooks(easyMergeData);
 
         // merge via openlibrary results
-        merged = merger.mergeOpenLibrary(merged, openLibData);
+        merged = merger.generateSuperBookRelations(merged, openLibData);
 
         // remove unused properties
         merged = merger.finalize(merged);
 
+        // merge openlibdata
+        openLibData = merger.finalize(openLibData.data, true);
+
         setTimeout(function () {
-            deferred.resolve(merged);
+            deferred.resolve({
+                versions: merged,
+                superBooks: openLibData
+            });
         }, 14);
 
         return deferred.promise;

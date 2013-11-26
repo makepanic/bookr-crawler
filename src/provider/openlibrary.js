@@ -20,32 +20,27 @@ providers.openlibrary = function () {
                 key: 'openlibrary',
                 title: item.title,
                 subtitle: item.subtitle,
-                publisher: item.publisher,
                 isbn: {
                     isbn10: [],
                     isbn13: []
                 },
                 authors: item.author_name,
                 year: item.first_publish_year,
-                textSnippet: item.first_sentence
+                textSnippet: item.first_sentence && item.first_sentence.length ? item.first_sentence[0] : '',
+                _id: item.key
             };
 
-            // check if item has isbn
-            if (!item.isbn) {
-                // create unique isbn identifier
-                item.isbn = [BookrCrawler.constants.NO_ISBN_KEY + BookrCrawler.uid()];
+            if (item.isbn) {
+                item.isbn.forEach(function (isbn) {
+                    // add isbn to fitting isbn type (13 or 10)
+                    var type = BookrCrawler.Util.Book.isbnType(isbn);
+                    if (type) {
+                        data.isbn[type].push(isbn);
+                    }
+                });
             }
 
-            // loop through each isbn
-            item.isbn.forEach(function (isbn) {
-                // add isbn to fitting isbn type (13 or 10)
-                var type = BookrCrawler.Util.Book.isbnType(isbn);
-                if (type) {
-                    data.isbn[type].push(isbn);
-                }
-            });
-
-            book = new BookrCrawler.Book(data);
+            book = new BookrCrawler.SuperBook(data);
 
             return book;
         };

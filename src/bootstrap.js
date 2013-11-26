@@ -6,6 +6,9 @@ var _ = require('lodash'),
     BookrCrawler = {
         _i: 0,
         version: '0.1.4',
+        /**
+         * @returns {Number}
+         */
         uid: function () {
             this._i += 1;
             return this._i;
@@ -22,6 +25,7 @@ require('./util/bookUtil');
 require('./util/variableType');
 
 require('./model/book');
+require('./model/superBook');
 require('./provider/provider');
 
 require('./common');

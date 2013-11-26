@@ -27,8 +27,8 @@ providers.isbndb = function () {
                 subtitle: item.title_long,
                 publisher: item.publisher_text,
                 isbn: {
-                    isbn10: [item.isbn10],
-                    isbn13: [item.isbn13]
+                    isbn10: item.isbn10,
+                    isbn13: item.isbn13
                 },
                 authors: []
             };
