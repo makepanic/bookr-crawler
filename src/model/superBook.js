@@ -15,10 +15,7 @@ BookrCrawler.SuperBook = function (data) {
             subtitle: '',
             authors: [],
             year: '',
-            isbn: {
-                isbn10: [],
-                isbn13: []
-            }
+            isbns: []
         },
         dataItem,
         combinedData = _.merge(defaultData, data);
@@ -31,8 +28,8 @@ BookrCrawler.SuperBook = function (data) {
     }
 };
 BookrCrawler.SuperBook.prototype.forStorage = function () {
-    var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbn'],
-        forMd5 = ['title', 'subtitle', 'authors', 'isbn'],
+    var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbns'],
+        forMd5 = ['title', 'subtitle', 'authors', 'isbns'],
         md5props,
         result,
         book = this;

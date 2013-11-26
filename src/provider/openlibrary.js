@@ -20,6 +20,7 @@ providers.openlibrary = function () {
                 key: 'openlibrary',
                 title: item.title,
                 subtitle: item.subtitle,
+                isbns: [],
                 isbn: {
                     isbn10: [],
                     isbn13: []
@@ -31,6 +32,8 @@ providers.openlibrary = function () {
             };
 
             if (item.isbn) {
+                data.isbns = BookrCrawler.Util.Book.groupIsbns(item.isbn);
+
                 item.isbn.forEach(function (isbn) {
                     // add isbn to fitting isbn type (13 or 10)
                     var type = BookrCrawler.Util.Book.isbnType(isbn);

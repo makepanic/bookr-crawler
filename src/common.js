@@ -74,7 +74,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
         merged = merger.finalize(merged);
 
         // merge openlibdata
-        openLibData = merger.finalize(openLibData.data, true);
+        openLibData = merger.finalizeSuperBook(openLibData.data);
 
         setTimeout(function () {
             deferred.resolve({

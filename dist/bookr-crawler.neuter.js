@@ -37,6 +37,8 @@ Bookr.AsyncHelper = {
     }
 };
 
+var ISBN = require('isbn').ISBN;
+
 BookrCrawler.Util.Book = {
     /**
      * Checks if a given string equals isbn13 or isbn10.
@@ -50,6 +52,42 @@ BookrCrawler.Util.Book = {
         // check if value is string and use length, otherwise length is 0
         var strLen = Object.prototype.toString.call(value) === '[object String]' ? value.length : 0;
         return strLen === 13 ? 'isbn13' : strLen === 10 ? 'isbn10' : undefined;
+    },
+
+    /**
+     * Groups 13/10 isbns together and returns an array of arrays
+     * TODO refactor to reduce ISBN function calls
+     * @param {Array} isbns
+     * @returns {Array} array of all isbn combinations. Each item in the array consists of [isbn10, isbn13]
+     */
+    groupIsbns: function (isbns) {
+        var isbnMap = {},
+            groupedIsbns = [],
+            key;
+
+        isbns.forEach(function (isbn) {
+            var parsedIsbn = ISBN.parse(isbn);
+
+            // generate key value map with key = isbn10 value = isbn13
+            if (parsedIsbn){
+                if (parsedIsbn.isIsbn10()) {
+                    isbnMap[isbn] = parsedIsbn.asIsbn13();
+                } else if(parsedIsbn.isIsbn13()) {
+                    isbnMap[parsedIsbn.asIsbn10()] = isbn;
+                } else {
+                    console.error('something is wrong with ' + isbn);
+                }
+            } else {
+                console.error('something is wrong with ' + isbn);
+            }
+        });
+
+        // generate array combining key and value [[isbn10, isbn13]]
+        Object.keys(isbnMap).forEach(function (key) {
+            groupedIsbns.push([key, isbnMap[key]]);
+        });
+
+        return groupedIsbns;
     }
 };
 
@@ -240,10 +278,7 @@ BookrCrawler.SuperBook = function (data) {
             subtitle: '',
             authors: [],
             year: '',
-            isbn: {
-                isbn10: [],
-                isbn13: []
-            }
+            isbns: []
         },
         dataItem,
         combinedData = _.merge(defaultData, data);
@@ -256,8 +291,8 @@ BookrCrawler.SuperBook = function (data) {
     }
 };
 BookrCrawler.SuperBook.prototype.forStorage = function () {
-    var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbn'],
-        forMd5 = ['title', 'subtitle', 'authors', 'isbn'],
+    var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbns'],
+        forMd5 = ['title', 'subtitle', 'authors', 'isbns'],
         md5props,
         result,
         book = this;
@@ -496,6 +531,7 @@ providers.openlibrary = function () {
                 key: 'openlibrary',
                 title: item.title,
                 subtitle: item.subtitle,
+                isbns: [],
                 isbn: {
                     isbn10: [],
                     isbn13: []
@@ -507,6 +543,8 @@ providers.openlibrary = function () {
             };
 
             if (item.isbn) {
+                data.isbns = BookrCrawler.Util.Book.groupIsbns(item.isbn);
+
                 item.isbn.forEach(function (isbn) {
                     // add isbn to fitting isbn type (13 or 10)
                     var type = BookrCrawler.Util.Book.isbnType(isbn);
@@ -657,7 +695,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
         merged = merger.finalize(merged);
 
         // merge openlibdata
-        openLibData = merger.finalize(openLibData.data, true);
+        openLibData = merger.finalizeSuperBook(openLibData.data);
 
         setTimeout(function () {
             deferred.resolve({
@@ -717,26 +755,30 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
  * Finalizes each book object.
  * - removes provider key
  * @param books
- * @param {Boolean} isSuperBook
  * @returns {*}
  */
-BookrCrawler.Merger.prototype.finalize = function (books, isSuperBook) {
+BookrCrawler.Merger.prototype.finalize = function (books) {
     'use strict';
     var key,
         bookArray = [];
 
-    if (!isSuperBook) {
-        for (key in books) {
-            if (books.hasOwnProperty(key)) {
-                // prepare for storage
-                bookArray.push(books[key].forStorage());
-            }
+    for (key in books) {
+        if (books.hasOwnProperty(key)) {
+            // prepare for storage
+            bookArray.push(books[key].forStorage());
         }
-    } else {
-        bookArray = books.map(function (book) {
-            return book.forStorage();
-        });
     }
+
+    return bookArray;
+};
+BookrCrawler.Merger.prototype.finalizeSuperBook = function (superBooks) {
+    'use strict';
+    var key,
+        bookArray = [];
+
+    bookArray = superBooks.map(function (book) {
+        return book.forStorage();
+    });
 
     return bookArray;
 };
