@@ -19,7 +19,8 @@ providers.google = function () {
                 data,
                 imageLink;
 
-            if (volumeInfo) {
+            // check if object and object has isbns
+            if (volumeInfo && volumeInfo.industryIdentifiers) {
                 data = {
                     key: 'google',
                     title: volumeInfo.title,
@@ -81,7 +82,11 @@ providers.google = function () {
                     responseData = JSON.parse(body);
 
                     responseData.items.forEach(function (item) {
-                        books.push(bookConverter(item));
+                        var convertedBook = bookConverter(item);
+
+                        if (convertedBook) {
+                            books.push(convertedBook);
+                        }
                     });
 
                 } catch (e) {
