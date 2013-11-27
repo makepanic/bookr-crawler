@@ -12,6 +12,9 @@ providers.google = function () {
 
     var crawl,
         baseUrl = 'https://www.googleapis.com/books/v1/volumes?q=',
+        /**
+         * Creates a {@link BookrCrawler.Book} form a provider json object
+         */
         bookConverter = function (item) {
             var volumeInfo = item.volumeInfo,
                 searchInfo = item.searchInfo,
