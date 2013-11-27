@@ -352,6 +352,9 @@ providers.google = function () {
 
     var crawl,
         baseUrl = 'https://www.googleapis.com/books/v1/volumes?q=',
+        /**
+         * Creates a {@link BookrCrawler.Book} form a provider json object
+         */
         bookConverter = function (item) {
             var volumeInfo = item.volumeInfo,
                 searchInfo = item.searchInfo,
@@ -359,7 +362,8 @@ providers.google = function () {
                 data,
                 imageLink;
 
-            if (volumeInfo) {
+            // check if object and object has isbns
+            if (volumeInfo && volumeInfo.industryIdentifiers) {
                 data = {
                     key: 'google',
                     title: volumeInfo.title,
@@ -421,7 +425,11 @@ providers.google = function () {
                     responseData = JSON.parse(body);
 
                     responseData.items.forEach(function (item) {
-                        books.push(bookConverter(item));
+                        var convertedBook = bookConverter(item);
+
+                        if (convertedBook) {
+                            books.push(convertedBook);
+                        }
                     });
 
                 } catch (e) {
