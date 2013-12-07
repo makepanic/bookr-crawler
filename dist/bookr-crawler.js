@@ -84,10 +84,11 @@ BookrCrawler.Util.Book = {
 
             // generate key value map with key = isbn10 value = isbn13
             if (parsedIsbn){
+                // call asIsbn function to get the same format for every valid isbn
                 if (parsedIsbn.isIsbn10()) {
-                    isbnMap[isbn] = parsedIsbn.asIsbn13();
+                    isbnMap[parsedIsbn.asIsbn10()] = parsedIsbn.asIsbn13();
                 } else if(parsedIsbn.isIsbn13()) {
-                    isbnMap[parsedIsbn.asIsbn10()] = isbn;
+                    isbnMap[parsedIsbn.asIsbn10()] = parsedIsbn.asIsbn13();
                 } else {
                     console.error('something is wrong with ' + isbn);
                 }
@@ -597,13 +598,18 @@ providers.openlibrary = function () {
                     // check if correct response object exists
                     if (responseData && responseData.docs) {
                         responseData.docs.forEach(function (item) {
-                            books.push(bookConverter(item));
+                            // create book and check if it has isbns
+                            var book = bookConverter(item);
+                            if (book.isbns.length){
+                                books.push(book);
+                            }
                         });
                     }
                 } catch (e) {
                     console.error('Error parsing json. ' + e);
                 }
             }
+
             deferred.resolve({
                 data: books,
                 key: 'openlibrary'

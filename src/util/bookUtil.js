@@ -31,10 +31,11 @@ BookrCrawler.Util.Book = {
 
             // generate key value map with key = isbn10 value = isbn13
             if (parsedIsbn){
+                // call asIsbn function to get the same format for every valid isbn
                 if (parsedIsbn.isIsbn10()) {
-                    isbnMap[isbn] = parsedIsbn.asIsbn13();
+                    isbnMap[parsedIsbn.asIsbn10()] = parsedIsbn.asIsbn13();
                 } else if(parsedIsbn.isIsbn13()) {
-                    isbnMap[parsedIsbn.asIsbn10()] = isbn;
+                    isbnMap[parsedIsbn.asIsbn10()] = parsedIsbn.asIsbn13();
                 } else {
                     console.error('something is wrong with ' + isbn);
                 }

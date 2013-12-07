@@ -64,13 +64,18 @@ providers.openlibrary = function () {
                     // check if correct response object exists
                     if (responseData && responseData.docs) {
                         responseData.docs.forEach(function (item) {
-                            books.push(bookConverter(item));
+                            // create book and check if it has isbns
+                            var book = bookConverter(item);
+                            if (book.isbns.length){
+                                books.push(book);
+                            }
                         });
                     }
                 } catch (e) {
                     console.error('Error parsing json. ' + e);
                 }
             }
+
             deferred.resolve({
                 data: books,
                 key: 'openlibrary'
