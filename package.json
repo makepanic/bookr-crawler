@@ -25,7 +25,7 @@
     "request": "~2.27.0",
     "nconf": "~0.6.7",
     "MD5": "~1.1.0",
-    "isbn": "~0.1.0"
+    "isbn": "git://github.com/makepanic/isbnjs.git#gh-pages"
   },
   "devDependencies": {
     "grunt-neuter": "~0.6.0",
