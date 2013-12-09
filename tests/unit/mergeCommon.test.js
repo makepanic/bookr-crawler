@@ -13,7 +13,7 @@ exports.testMerge = function (test) {
             key: 'google',
             title: 'title-from-google',
             isbn: {
-                isbn10: ['0812972155']
+                isbn10: '0812972155'
             },
             textSnippet: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.'
 
@@ -24,7 +24,7 @@ exports.testMerge = function (test) {
             subtitle: 'not-google subtitle',
             year: '1990',
             isbn: {
-                isbn13: ['9780812972153']
+                isbn13: '9780812972153'
             }
         },
         createGoogleBook = function () {

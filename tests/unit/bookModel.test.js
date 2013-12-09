@@ -13,11 +13,12 @@ exports.testModel = function (test) {
             title: '',
             subtitle: '',
             authors: [],
+            superBook: '',
             year: '',
             publisher: '',
             isbn: {
-                isbn10: [],
-                isbn13: []
+                isbn10: '',
+                isbn13: ''
             },
             thumbnail: {
                 small: '',
@@ -40,8 +41,8 @@ exports.testModel = function (test) {
     test.done();
 };
 exports.testModelForStorage = function (test) {
-    var forStorage = ['title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet', 'thumbnail'],
-        expectedMd5 = 'a1e2c9f98f871453534de4b5d423a69c',
+    var forStorage = ['superBook', 'title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet', 'thumbnail'],
+        expectedMd5 = '8b9670d4b76132582e22a465945abda9',
 
         createForStorage = function (params) {
             var book = new bookrCrawler.Book(params);
