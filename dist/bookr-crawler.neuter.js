@@ -251,6 +251,22 @@ BookrCrawler.Book.prototype.forStorage = function () {
         return result;
     }
 
+    function computeQuality(source) {
+        // TODO not hardcoded
+        var quality = 0;
+        if (source.hasOwnProperty('textSnippet') && source.textSnippet.length){
+            quality += source.textSnippet.length;
+        }
+        if (source.hasOwnProperty('thumbnail') &&
+            (source.thumbnail.normal.length || source.thumbnail.small.length)) {
+            quality += 10;
+        }
+
+        quality += source.hasOwnProperty('publisher') && source.publisher.length ? 10 : 0;
+
+        return quality;
+    }
+
     // generate object from book using storageVars array
     result = objectFromProps(book, storageVars);
     // generate object from results using forMd5 array
@@ -258,6 +274,8 @@ BookrCrawler.Book.prototype.forStorage = function () {
 
     // add md5sum from md5props object
     result.hash = md5(JSON.stringify(md5props));
+
+    result.quality = computeQuality(result);
 
     return result;
 };
