@@ -54,7 +54,10 @@ providers.openlibrary = function () {
         var deferred = Q.defer();
 
         // start request
-        request(baseUrl + query, function (err, resp, body) {
+        request({
+            url: baseUrl + query,
+            timeout: 5000
+        }, function (err, resp, body) {
             var books = [],
                 responseData;
 
