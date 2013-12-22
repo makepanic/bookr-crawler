@@ -1,3 +1,5 @@
+/*global BookrCrawler */
+
 var ISBN = require('isbn').ISBN;
 
 BookrCrawler.Util.Book = {
@@ -23,8 +25,7 @@ BookrCrawler.Util.Book = {
      */
     groupIsbns: function (isbns) {
         var isbnMap = {},
-            groupedIsbns = [],
-            key;
+            groupedIsbns = [];
 
         isbns.forEach(function (isbn) {
             var parsedIsbn = ISBN.parse(isbn);

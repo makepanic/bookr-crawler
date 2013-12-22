@@ -1,3 +1,5 @@
+/*global BookrCrawler */
+
 (function (BookrCrawlerUtil) {
     'use strict';
 

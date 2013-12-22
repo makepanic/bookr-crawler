@@ -1,3 +1,5 @@
+/*global BookrCrawler */
+
 var _ = require('lodash'),
     md5 = md5 || require('MD5');
 
@@ -35,14 +37,14 @@ BookrCrawler.SuperBook.prototype.forStorage = function () {
         book = this;
 
     function objectFromProps(source, props) {
-        var result = {};
+        var obj = {};
         // create object with given properties from this book
         props.forEach(function (prop) {
             if (source.hasOwnProperty(prop)) {
-                result[prop] = source[prop];
+                obj[prop] = source[prop];
             }
         });
-        return result;
+        return obj;
     }
 
     // generate object from book using storageVars array

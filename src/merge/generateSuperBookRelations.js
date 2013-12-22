@@ -1,4 +1,4 @@
-
+/*global BookrCrawler */
 /**
  * Merges books by checking if their isbn exists in the OpenLibrary search results. The OpenLibrary results can return
  * multiple isbns for 1 book.

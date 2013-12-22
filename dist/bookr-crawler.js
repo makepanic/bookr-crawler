@@ -51,6 +51,8 @@ Bookr.AsyncHelper = {
     }
 };
 
+/*global BookrCrawler */
+
 var ISBN = require('isbn').ISBN;
 
 BookrCrawler.Util.Book = {
@@ -76,8 +78,7 @@ BookrCrawler.Util.Book = {
      */
     groupIsbns: function (isbns) {
         var isbnMap = {},
-            groupedIsbns = [],
-            key;
+            groupedIsbns = [];
 
         isbns.forEach(function (isbn) {
             var parsedIsbn = ISBN.parse(isbn);
@@ -105,6 +106,8 @@ BookrCrawler.Util.Book = {
         return groupedIsbns;
     }
 };
+
+/*global BookrCrawler */
 
 (function (BookrCrawlerUtil) {
     'use strict';
@@ -208,6 +211,8 @@ BookrCrawler.Util.Book = {
     };
 }(BookrCrawler.Util));
 
+/*global BookrCrawler */
+
 var _ = require('lodash'),
     md5 = md5 || require('MD5');
 
@@ -255,14 +260,14 @@ BookrCrawler.Book.prototype.forStorage = function () {
         book = this;
 
     function objectFromProps(source, props) {
-        var result = {};
+        var obj = {};
         // create object with given properties from this book
         props.forEach(function (prop) {
             if (source.hasOwnProperty(prop)) {
-                result[prop] = source[prop];
+                obj[prop] = source[prop];
             }
         });
-        return result;
+        return obj;
     }
 
     function computeQuality(source) {
@@ -293,6 +298,8 @@ BookrCrawler.Book.prototype.forStorage = function () {
 
     return result;
 };
+
+/*global BookrCrawler */
 
 var _ = require('lodash'),
     md5 = md5 || require('MD5');
@@ -331,14 +338,14 @@ BookrCrawler.SuperBook.prototype.forStorage = function () {
         book = this;
 
     function objectFromProps(source, props) {
-        var result = {};
+        var obj = {};
         // create object with given properties from this book
         props.forEach(function (prop) {
             if (source.hasOwnProperty(prop)) {
-                result[prop] = source[prop];
+                obj[prop] = source[prop];
             }
         });
-        return result;
+        return obj;
     }
 
     // generate object from book using storageVars array
@@ -352,10 +359,14 @@ BookrCrawler.SuperBook.prototype.forStorage = function () {
     return result;
 };
 
+/*global BookrCrawler */
+
 (function (BookrCrawler) {
     'use strict';
     var providers = {};
 
+
+/*global BookrCrawler */
 
 var Q = Q || require('q'),
     request = request || require('request'),
@@ -469,6 +480,8 @@ providers.google = function () {
     };
 };
 
+/*global BookrCrawler */
+
 var Q = Q || require('q'),
     request = request || require('request'),
     nconf = nconf || require('nconf'),
@@ -488,6 +501,13 @@ providers.isbndb = function () {
 
     var crawl,
         baseUrl = 'http://isbndb.com/api/v2/json/' + isbndb.key + '/books?q=',
+
+        /**
+         * Converts isbndb result item to BookrCrawler.Book
+         *
+         * @param item
+         * @returns {BookrCrawler.Book}
+         */
         bookConverter = function (item) {
             var book,
                 data;
@@ -549,6 +569,8 @@ providers.isbndb = function () {
         crawl: crawl
     };
 };
+
+/*global BookrCrawler */
 
 var Q = Q || require('q'),
     request = request || require('request'),
@@ -665,6 +687,7 @@ providers.openlibrary = function () {
 }(BookrCrawler));
 
 
+/*global BookrCrawler, Q, _ */
 
 /**
  * Main method to crawl given provider
@@ -754,6 +777,7 @@ BookrCrawler.mergeCrawl = function (currentCfg) {
     });
 };
 
+/*global BookrCrawler */
 /**
  * Class that can merge books
  * @param {String} prefer
@@ -769,6 +793,7 @@ BookrCrawler.Merger = function (prefer, isbnIdentifer) {
 };
 
 
+/*global BookrCrawler */
 /**
  * Merges two books.
  * @param destination
@@ -819,8 +844,7 @@ BookrCrawler.Merger.prototype.finalize = function (books) {
 };
 BookrCrawler.Merger.prototype.finalizeSuperBook = function (superBooks) {
     'use strict';
-    var key,
-        bookArray = [];
+    var bookArray = [];
 
     bookArray = superBooks.map(function (book) {
         return book.forStorage();
@@ -829,6 +853,7 @@ BookrCrawler.Merger.prototype.finalizeSuperBook = function (superBooks) {
     return bookArray;
 };
 
+/*global BookrCrawler */
 /**
  * Rules for merging 2 values.
  * @type {{array: Function, string: Function, object: Function}}
@@ -920,7 +945,7 @@ BookrCrawler.Merger.mergeRules = {
     }
 };
 
-
+/*global BookrCrawler */
 /**
  * Merges books by checking if their isbn exists in the OpenLibrary search results. The OpenLibrary results can return
  * multiple isbns for 1 book.
@@ -978,7 +1003,7 @@ BookrCrawler.Merger.prototype.generateSuperBookRelations = function (dump, super
 };
 
 
-
+/*global BookrCrawler */
 /**
  * Merges an array of books by an unique identifier.
  * If multiple books have the same identifier (e.g. isbn13) then both are merged into one book object.
@@ -1019,7 +1044,6 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
                 var alreadyStored = uniqueBooks.hasOwnProperty(isbn),
                     prop,
                     uniqueBook,
-                    uniqueVal,
                     type;
 
                 // check if there is something in unique map

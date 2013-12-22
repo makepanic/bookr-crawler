@@ -1,3 +1,4 @@
+/*global BookrCrawler */
 /**
  * Class that can merge books
  * @param {String} prefer

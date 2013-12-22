@@ -1,3 +1,5 @@
+/*global BookrCrawler */
+
 var Q = Q || require('q'),
     request = request || require('request'),
     nconf = nconf || require('nconf'),
@@ -17,6 +19,13 @@ providers.isbndb = function () {
 
     var crawl,
         baseUrl = 'http://isbndb.com/api/v2/json/' + isbndb.key + '/books?q=',
+
+        /**
+         * Converts isbndb result item to BookrCrawler.Book
+         *
+         * @param item
+         * @returns {BookrCrawler.Book}
+         */
         bookConverter = function (item) {
             var book,
                 data;

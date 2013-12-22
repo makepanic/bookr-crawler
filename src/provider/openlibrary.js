@@ -1,3 +1,5 @@
+/*global BookrCrawler */
+
 var Q = Q || require('q'),
     request = request || require('request'),
     nconf = nconf || require('nconf'),

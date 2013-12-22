@@ -1,3 +1,5 @@
+/*global BookrCrawler */
+
 (function (BookrCrawler) {
     'use strict';
     var providers = {};

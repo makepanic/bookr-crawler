@@ -1,4 +1,4 @@
-
+/*global BookrCrawler */
 /**
  * Merges an array of books by an unique identifier.
  * If multiple books have the same identifier (e.g. isbn13) then both are merged into one book object.
@@ -39,7 +39,6 @@ BookrCrawler.Merger.prototype.mergeBooks = function (dump) {
                 var alreadyStored = uniqueBooks.hasOwnProperty(isbn),
                     prop,
                     uniqueBook,
-                    uniqueVal,
                     type;
 
                 // check if there is something in unique map

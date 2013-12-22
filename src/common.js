@@ -1,3 +1,4 @@
+/*global BookrCrawler, Q, _ */
 
 /**
  * Main method to crawl given provider

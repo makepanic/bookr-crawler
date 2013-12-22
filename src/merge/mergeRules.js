@@ -1,3 +1,4 @@
+/*global BookrCrawler */
 /**
  * Rules for merging 2 values.
  * @type {{array: Function, string: Function, object: Function}}

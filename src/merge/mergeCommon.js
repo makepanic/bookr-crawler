@@ -1,3 +1,4 @@
+/*global BookrCrawler */
 /**
  * Merges two books.
  * @param destination
@@ -48,8 +49,7 @@ BookrCrawler.Merger.prototype.finalize = function (books) {
 };
 BookrCrawler.Merger.prototype.finalizeSuperBook = function (superBooks) {
     'use strict';
-    var key,
-        bookArray = [];
+    var bookArray = [];
 
     bookArray = superBooks.map(function (book) {
         return book.forStorage();
