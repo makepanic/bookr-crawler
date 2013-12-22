@@ -14,6 +14,7 @@ providers.google = function () {
 
     var crawl,
         baseUrl = 'https://www.googleapis.com/books/v1/volumes?q=',
+
         /**
          * Creates a {@link BookrCrawler.Book} form a provider json object
          */
@@ -70,8 +71,6 @@ providers.google = function () {
 
             return book;
         };
-
-
 
     crawl = function (query) {
         var deferred = Q.defer();

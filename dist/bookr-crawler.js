@@ -14,6 +14,7 @@
     }
 }((typeof window === 'object' && window) || this, function () {;'use strict';
 
+// bootstrap required structures and load libraries
 var _ = require('lodash'),
     Q = require('q'),
     Bookr = {},
@@ -33,23 +34,6 @@ var _ = require('lodash'),
         Util: {}
     };
 
-
-// provide namespace
-var Bookr = Bookr || {},
-    Q = Q || require('q');
-
-Bookr.AsyncHelper = {
-    wrapInPromise: function (callback) {
-        'use strict';
-
-        var defer = Q.defer();
-
-        callback(defer);
-
-        return defer.promise;
-
-    }
-};
 
 /*global BookrCrawler */
 
@@ -252,6 +236,11 @@ BookrCrawler.Book = function (data) {
         }
     }
 };
+
+/**
+ * Function that computes properties that are useful for storing the model and returns an object with all required properties.
+ * @returns {Object}
+ */
 BookrCrawler.Book.prototype.forStorage = function () {
     var storageVars = ['superBook', 'title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet', 'thumbnail'],
         forMd5 = ['title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet'],
@@ -259,6 +248,12 @@ BookrCrawler.Book.prototype.forStorage = function () {
         result,
         book = this;
 
+    /**
+     * Function that creates a new object from a given object using a list of properties
+     * @param {Object} source
+     * @param {Array} props
+     * @returns {Object}
+     */
     function objectFromProps(source, props) {
         var obj = {};
         // create object with given properties from this book
@@ -270,6 +265,11 @@ BookrCrawler.Book.prototype.forStorage = function () {
         return obj;
     }
 
+    /**
+     * Function that computes a value that represents the quality of a Book
+     * @param {Object} source
+     * @returns {Number} quality (high = good quality)
+     */
     function computeQuality(source) {
         // TODO not hardcoded
         var quality = 0;
@@ -305,8 +305,8 @@ var _ = require('lodash'),
     md5 = md5 || require('MD5');
 
 /**
- * Model that defines the properties for each book
- * @param data
+ * SuperBook model that defines the properties for each superBook
+ * @param {Object} data
  * @constructor
  */
 BookrCrawler.SuperBook = function (data) {
@@ -330,6 +330,10 @@ BookrCrawler.SuperBook = function (data) {
         }
     }
 };
+/**
+ * Function that computes properties that are useful for storing the model and returns an object with all required properties.
+ * @returns {Object}
+ */
 BookrCrawler.SuperBook.prototype.forStorage = function () {
     var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbns'],
         forMd5 = ['title', 'subtitle', 'authors', 'isbns'],
@@ -337,6 +341,12 @@ BookrCrawler.SuperBook.prototype.forStorage = function () {
         result,
         book = this;
 
+    /**
+     * Function that creates a new object from a given object using a list of properties
+     * @param {Object} source
+     * @param {Array} props
+     * @returns {Object}
+     */
     function objectFromProps(source, props) {
         var obj = {};
         // create object with given properties from this book
@@ -382,6 +392,7 @@ providers.google = function () {
 
     var crawl,
         baseUrl = 'https://www.googleapis.com/books/v1/volumes?q=',
+
         /**
          * Creates a {@link BookrCrawler.Book} form a provider json object
          */
@@ -438,8 +449,6 @@ providers.google = function () {
 
             return book;
         };
-
-
 
     crawl = function (query) {
         var deferred = Q.defer();
@@ -691,7 +700,7 @@ providers.openlibrary = function () {
 
 /**
  * Main method to crawl given provider
- * @param currentCfg
+ * @param {Object} currentCfg
  * @returns {*} Promise
  */
 BookrCrawler.crawl = function (currentCfg) {
@@ -720,6 +729,7 @@ BookrCrawler.crawl = function (currentCfg) {
 
 /**
  * Method that combines the crawl function and merges the results afterwards
+ * @see {@link BookrCrawler.crawl}
  * @param currentCfg
  * @returns {*} merged map of books
  */
@@ -824,9 +834,9 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
 
 /**
  * Finalizes each book object.
- * - removes provider key
- * @param books
- * @returns {*}
+ * @see {@link BookrCrawler.Book.forStorage}
+ * @param {Array} books
+ * @returns {Array}
  */
 BookrCrawler.Merger.prototype.finalize = function (books) {
     'use strict';
@@ -842,6 +852,13 @@ BookrCrawler.Merger.prototype.finalize = function (books) {
 
     return bookArray;
 };
+
+/**
+ * Finalizes each SuperBook object.
+ * @see {@link BookrCrawler.SuperBook.forStorage}
+ * @param {Array} superBooks
+ * @returns {Array}
+ */
 BookrCrawler.Merger.prototype.finalizeSuperBook = function (superBooks) {
     'use strict';
     var bookArray = [];

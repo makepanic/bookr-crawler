@@ -1,5 +1,6 @@
 'use strict';
 
+// bootstrap required structures and load libraries
 var _ = require('lodash'),
     Q = require('q'),
     Bookr = {},
@@ -19,7 +20,6 @@ var _ = require('lodash'),
         Util: {}
     };
 
-require('./util/asyncHelper');
 require('./util/bookUtil');
 
 require('./util/variableType');

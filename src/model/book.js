@@ -39,6 +39,11 @@ BookrCrawler.Book = function (data) {
         }
     }
 };
+
+/**
+ * Function that computes properties that are useful for storing the model and returns an object with all required properties.
+ * @returns {Object}
+ */
 BookrCrawler.Book.prototype.forStorage = function () {
     var storageVars = ['superBook', 'title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet', 'thumbnail'],
         forMd5 = ['title', 'subtitle', 'authors', 'year', 'publisher', 'isbn', 'textSnippet'],
@@ -46,6 +51,12 @@ BookrCrawler.Book.prototype.forStorage = function () {
         result,
         book = this;
 
+    /**
+     * Function that creates a new object from a given object using a list of properties
+     * @param {Object} source
+     * @param {Array} props
+     * @returns {Object}
+     */
     function objectFromProps(source, props) {
         var obj = {};
         // create object with given properties from this book
@@ -57,6 +68,11 @@ BookrCrawler.Book.prototype.forStorage = function () {
         return obj;
     }
 
+    /**
+     * Function that computes a value that represents the quality of a Book
+     * @param {Object} source
+     * @returns {Number} quality (high = good quality)
+     */
     function computeQuality(source) {
         // TODO not hardcoded
         var quality = 0;

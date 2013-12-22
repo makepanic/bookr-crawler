@@ -4,8 +4,8 @@ var _ = require('lodash'),
     md5 = md5 || require('MD5');
 
 /**
- * Model that defines the properties for each book
- * @param data
+ * SuperBook model that defines the properties for each superBook
+ * @param {Object} data
  * @constructor
  */
 BookrCrawler.SuperBook = function (data) {
@@ -29,6 +29,10 @@ BookrCrawler.SuperBook = function (data) {
         }
     }
 };
+/**
+ * Function that computes properties that are useful for storing the model and returns an object with all required properties.
+ * @returns {Object}
+ */
 BookrCrawler.SuperBook.prototype.forStorage = function () {
     var storageVars = ['_id', 'year', 'title', 'subtitle', 'authors', 'isbns'],
         forMd5 = ['title', 'subtitle', 'authors', 'isbns'],
@@ -36,6 +40,12 @@ BookrCrawler.SuperBook.prototype.forStorage = function () {
         result,
         book = this;
 
+    /**
+     * Function that creates a new object from a given object using a list of properties
+     * @param {Object} source
+     * @param {Array} props
+     * @returns {Object}
+     */
     function objectFromProps(source, props) {
         var obj = {};
         // create object with given properties from this book

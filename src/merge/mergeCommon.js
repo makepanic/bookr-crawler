@@ -29,9 +29,9 @@ BookrCrawler.Merger.prototype.merge = function (destination, source) {
 
 /**
  * Finalizes each book object.
- * - removes provider key
- * @param books
- * @returns {*}
+ * @see {@link BookrCrawler.Book.forStorage}
+ * @param {Array} books
+ * @returns {Array}
  */
 BookrCrawler.Merger.prototype.finalize = function (books) {
     'use strict';
@@ -47,6 +47,13 @@ BookrCrawler.Merger.prototype.finalize = function (books) {
 
     return bookArray;
 };
+
+/**
+ * Finalizes each SuperBook object.
+ * @see {@link BookrCrawler.SuperBook.forStorage}
+ * @param {Array} superBooks
+ * @returns {Array}
+ */
 BookrCrawler.Merger.prototype.finalizeSuperBook = function (superBooks) {
     'use strict';
     var bookArray = [];

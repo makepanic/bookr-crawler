@@ -2,7 +2,7 @@
 
 /**
  * Main method to crawl given provider
- * @param currentCfg
+ * @param {Object} currentCfg
  * @returns {*} Promise
  */
 BookrCrawler.crawl = function (currentCfg) {
@@ -31,6 +31,7 @@ BookrCrawler.crawl = function (currentCfg) {
 
 /**
  * Method that combines the crawl function and merges the results afterwards
+ * @see {@link BookrCrawler.crawl}
  * @param currentCfg
  * @returns {*} merged map of books
  */
