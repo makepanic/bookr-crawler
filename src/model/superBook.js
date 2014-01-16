@@ -1,7 +1,7 @@
 /*global BookrCrawler */
 
 var _ = require('lodash'),
-    md5 = md5 || require('MD5');
+    md5 = require('MD5');
 
 /**
  * SuperBook model that defines the properties for each superBook
